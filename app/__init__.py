@@ -32,3 +32,8 @@ def create_app(config) -> Flask:
     return app
 
 app = create_app(config_by_name[os.getenv('BOILERPLATE_ENV') or 'dev'])
+
+
+@app.route("/")
+def main():
+    return "A basic service deploy on AWS using flask (python)"

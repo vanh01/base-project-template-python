@@ -31,6 +31,18 @@ start-service:
 	sudo systemctl start app.service
 .PHONY: start-service
 
+stop-service:
+	sudo systemctl stop app.service
+.PHONY: stop-service
+
+restart-service:
+	sudo systemctl restart app.service
+.PHONY: restart-service
+
 config-nginx:
 	sudo cp nginx.conf /etc/nginx/nginx.conf
 .PHONY: config-nginx
+
+restart-nginx:
+	sudo systemctl restart nginx
+.PHONY: restart-nginx
