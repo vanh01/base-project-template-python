@@ -9,8 +9,8 @@ def cli():
 def gen_service():
     """Generate a new service file to deploy server on linux"""
     basedir = os.path.abspath(os.path.dirname(__file__))
-    if os.path.exists("flaskapp.service"):
-        os.remove("flaskapp.service")
+    if os.path.exists("app.service"):
+        os.remove("app.service")
     str = f"""[Unit]
 Description=A template for flask web service
 After=network.target
@@ -18,11 +18,11 @@ After=network.target
 [Service]
 WorkingDirectory={basedir}
 Environment= "PATH={basedir}/venv/bin"
-ExecStart={basedir}/venv/bin/gunicorn --workers 3 --bind unix:app.sock -m 007 app:app
+ExecStart={basedir}/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8080 app:app
 
 [Install]
 WantedBy=multi-user.target"""
-    f = open("flaskapp.service", "w")
+    f = open("app.service", "w")
     f.write(str)
     f.close()
 
