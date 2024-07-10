@@ -4,6 +4,8 @@ from flask_restx import Resource
 
 from ..util.dto import AccountDto
 
+from ..resource import ResourceType, ActionType
+from ..helper.decorator.permission import Access
 from ..service.account import get_all_accounts, create_account, get_account_by_id
 
 api = AccountDto.api
@@ -15,6 +17,7 @@ logger = logging.getLogger(__name__)
 class AccountList(Resource):
     @api.doc('list_of_registered_accounts')
     @api.marshal_list_with(_account, envelope='data')
+    @Access(resources=[ResourceType.ACCOUNT], action=ActionType.READ)
     def get(self):
         """List all registered accounts"""
         return get_all_accounts(), 200
@@ -22,6 +25,7 @@ class AccountList(Resource):
     @api.response(201, 'Account successfully created.')
     @api.doc('create a new account')
     @api.expect(_account, validate=True)
+    @Access(resources=[ResourceType.ACCOUNT], action=ActionType.CREATE)
     def post(self):
         """Creates a new Account """
         account = request.json
@@ -39,3 +43,16 @@ class Account(Resource):
     @api.marshal_with(_account)
     def get(self, public_id):
         return get_account_by_id(public_id), 200
+
+@api.route("/oauth/google/login")
+class AccountGoogle(Resource):
+    @api.doc('login with google')
+    def get(self):
+        pass
+
+@api.route("/oauth/google/callback")
+@api.param('code', 'code from google')
+class AccountGoogleCallback(Resource):
+    @api.doc('google callback')
+    def get(self):
+        pass

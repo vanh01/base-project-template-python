@@ -14,6 +14,10 @@ from .logging import configure_logging
 from .blueprint import blpv1
 from .router import map_namespacev1
 
+# import all models to migrate
+from .model.account import Account
+from .model.resource import Resource
+
 
 def create_app(config) -> Flask:
     app = Flask(__name__)
@@ -36,4 +40,4 @@ app = create_app(config_by_name[os.getenv('BOILERPLATE_ENV') or 'dev'])
 
 @app.route("/")
 def main():
-    return "A basic service deploy on AWS using flask (python)"
+    return "A basic service deployed on AWS using flask (python)"
