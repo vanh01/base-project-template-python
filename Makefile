@@ -1,17 +1,17 @@
 init:
-	python -m venv venv
+	test -d venv || virtualenv venv
 .PHONY: init
 
 zipp:
-	pip freeze > requirements.txt
+	. ${CURDIR}/venv/bin/activate; pip freeze > requirements.txt
 .PHONY: zipp
 
-unzipp:
-	pip install -r requirements.txt
+unzipp: init
+	. ${CURDIR}/venv/bin/activate; pip install -r requirements.txt
 .PHONY: unzipp
 
 migrate:
-	python migrate.py
+	python3 migrate.py
 .PHONY: migrate
 
 run:
@@ -46,3 +46,12 @@ config-nginx:
 restart-nginx:
 	sudo systemctl restart nginx
 .PHONY: restart-nginx
+
+build-run: unzipp
+	python3 gen.py gen-service
+	make enable-service
+	sudo systemctl is-active --quiet app.service && sudo systemctl restart app.service || sudo systemctl start app.service
+	# make config-nginx
+	# make restart-nginx
+
+.PHONY: build-run
