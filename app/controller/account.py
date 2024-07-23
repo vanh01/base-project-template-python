@@ -6,6 +6,7 @@ from ..util.dto import AccountDto
 
 from ..resource import ResourceType, ActionType
 from ..helper.decorator.permission import Access
+from ..helper.decorator.rate_limiter import rate_limited, Period
 from ..service.account import get_all_accounts, create_account, get_account_by_id
 
 api = AccountDto.api
@@ -18,6 +19,7 @@ class AccountList(Resource):
     @api.doc('list_of_registered_accounts')
     @api.marshal_list_with(_account, envelope='data')
     @Access(resources=[ResourceType.ACCOUNT], action=ActionType.READ)
+    @rate_limited(rate=100, per=Period.MINUTE)
     def get(self):
         """List all registered accounts"""
         return get_all_accounts(), 200
